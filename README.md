@@ -1,64 +1,81 @@
 # sandbox-kubernetes
 
+## Overview
+**sandbox-kubernetes** is a set of Docker and Kubernetes configuration files used as a starting point for learning and testing key features of Kubernetes.
+
+## Table of Contents
+
+* [Docker Commands](#docker-commands)
+* [Kubernetes Commands](#kubernetes-commands)
+    * [General](#general)
+    * [Labels](#labels)
+    * [Annotations](#annotations)
+    * [Namespaces](#namespaces)
+    * [Replication Controllers](#replication-controllers)
+    * [Replication Set](#replication-sets)
+    * [Services](#services)
+
 ## Docker Commands
 
-### Build the container image
+#### Build the container image
 `docker build -t sandbox-k8s-app .`
 
-### Run the image
+#### Run the image
 `docker run --name sandbox-k8s-app-container -p 8080:8080 -d sandbox-k8s-app`
 
-### Test the app
+#### Test the app
 `curl localhost:8080`
 
-### Connect to running container
+#### Connect to running container
 `docker exec -it sandbox-k8s-app-container bash`
 
-### Access logs from container
+#### Access logs from container
 `docker logs {container id}`
 
-### Stop the container
+#### Stop the container
 `docker stop sandbox-k8s-app-container`
 
-### Remove the container
+#### Remove the container
 `docker rm sandbox-k8s-app-container`
 
-### Login to Docker Hub
+#### Login to Docker Hub
 `docker login`
 
-## Tag image
+#### Tag image
 `docker tag sandbox-k8s-app jlotz/sandbox-k8s-app`
 
 _Note: Replace "jlotz" with your Docker Hub ID_
 
-### Push to Docker Hub
+#### Push to Docker Hub
 `docker push jlotz/sandbox-k8s-app`
 
-## Run image from a different machine
+#### Run image from a different machine
 `docker run -p 8080:8080 -d jlotz/sandbox-k8s-app`
 
 ## Kubernetes Commands
 
 These instructions assume that you have a working installation of `minikube` running locally and the `kubectl` tools installed. 
 
-### Start/stop cluster
+### General
+
+#### Start/stop cluster
 `minikube start`
 `minikube stop`
 
-### Open the minikube dashboard
+#### Open the minikube dashboard
 `minikube dashboard`
 
-### Verify cluster is working
+#### Verify cluster is working
 `kubectl cluster-info`
 
-### Deploy pod from YAML
+#### Deploy pod from YAML
 `kubectl create -f sandbox-k8s-manual.yaml`
 
 Specifying a namespace:
 
 `kubectl create -f sandbox-k8s-manual.yaml -n custom-namespace`
 
-### List pods using labels
+#### List pods using labels
 `kubectl get po --show-labels`
 
 `kubectl get po -L creation_method,env`
@@ -83,14 +100,14 @@ Similarly, you could also match pods with the following label selectors:
 
 `env notin (prod,devel)` to select pods with the env label set to any value other than prod or devel
 
-### Describe the pod
+#### Describe the pod
 `kubectl describe pod sandbox-k8s-manual`
 
-### Get the full YAML or JSON for the pod
+#### Get the full YAML or JSON for the pod
 `kubectl get po sandbox-k8s-manual -o yaml`
 `kubectl get po sandbox-k8s-manual -o json`
 
-### Access logs from pod
+#### Access logs from pod
 Single container:
 `kubectl logs sandbox-k8s-manual`
 
@@ -101,39 +118,15 @@ Previous iteration (after a failure/restart):
 
 `kubectl logs sandbox-k8s-manual --previous`
 
-### Setup port forwarding
+#### Setup port forwarding
 `kubectl port-forward sandbox-k8s-manual 8888:8080`
 
-### Test app
+#### Test app
 `curl localhost:8888`
 
 Or, open web browser to http://localhost:8888
 
-### Updating labels
-`kubectl label po sandbox-k8s-manual env=test --overwrite`
-
-### Adding annotations
-`kubectl annotate pod sandbox-k8s-manual mycompany.com/someannotation="foo bar"`
-
-### Get namespaces
-`kubectl get ns`
-
-### Get pods in a namespace
-`kubectl get po -n kube-system`
-
-### Create a namespace
-From a YAML file:
-
-`kubectl create -f custom-namespace.yaml`
-
-From the command line:
-
-`kubectl create namespace custom-namespace`
-
-### Switch to a namespace
-`kubectl config set-context $(kubectl config current-context) --namespace custom-namespace`
-
-### Delete the pod
+#### Delete the pod
 `kubectl delete po sandbox-k8s-app`
 
 You can also delete more than one pod by specifying multiple, space-separated names:
@@ -156,31 +149,67 @@ All resources in the current namespace:
 
 `kubectl delete all --all`
 
-### Create replication controller
+### Labels
+
+#### Updating labels
+`kubectl label po sandbox-k8s-manual env=test --overwrite`
+
+### Annotations
+
+#### Adding annotations
+`kubectl annotate pod sandbox-k8s-manual mycompany.com/someannotation="foo bar"`
+
+### Namespaces
+
+#### Get namespaces
+`kubectl get ns`
+
+#### Get pods in a namespace
+`kubectl get po -n kube-system`
+
+#### Create a namespace
+From a YAML file:
+
+`kubectl create -f custom-namespace.yaml`
+
+From the command line:
+
+`kubectl create namespace custom-namespace`
+
+#### Switch to a namespace
+`kubectl config set-context $(kubectl config current-context) --namespace custom-namespace`
+
+### Replication Controllers
+
+#### Create replication controller
 `kubectl create -f kubia-rc.yaml`
 
-### Get replications controllers
+#### Get replication controllers
 `kubectl get rc`
 
-### Describe replications controller
+#### Describe replication controller
 `kubectl describe rc sandbox-k8s-rc`
 
-### Delete replication controller
+#### Delete replication controller
 `kubectl delete rs sandbox-k8s-rc`
 
-### Create replication set
+### Replication Sets
+
+#### Create replication set
 `kubectl create -f kubia-rs.yaml`
 
-### Get replications sets
+#### Get replications sets
 `kubectl get rs`
 
-### Describe replications sets
+#### Describe replications sets
 `kubectl describe rc sandbox-k8s-rs`
 
-### Delete replication sets
+#### Delete replication sets
 `kubectl delete rs sandbox-k8s-rs`
 
-### Create service
+### Services
+
+#### Create service
 ClusterIP (Default):
 
 `kubectl create -f sandbox-k8s-svc.yaml`
@@ -201,10 +230,10 @@ Ingress (with TLS):
 
 `kubectl create -f sandbox-k8s-ingress-svc.yaml`
 
-### Get services
+#### Get services
 `kubectl get svc`
 
-### Call service from within a pod
+#### Call service from within a pod
 `kubectl exec {pod name} -- curl -s http://{service IP}`
 
 `kubectl exec {pod name} -- curl http://sandbox-k8s-svc.default.svc.cluster.local`
@@ -213,15 +242,15 @@ Ingress (with TLS):
 
 `kubectl exec {pod name} -- curl http://sandbox-k8s-svc`
 
-### Call NodePort service from browser via MiniKube
+#### Call NodePort service from browser via MiniKube
 
 `minikube service sandbox-k8s-nodeport-svc`
 
-### Call LoadBalancer service from browser via MiniKube
+#### Call LoadBalancer service from browser via MiniKube
 
 `minikube service sandbox-k8s-loadbalancer-svc`
 
-### Call Ingress service
+#### Call Ingress service
 No TLS:
 
 `curl http://sandbox-k8s.example.com`
@@ -235,7 +264,7 @@ _Notes:_
 * _Must enable Ingress in Minikube via the following command: `minikube addons enable ingress`_
 * _For TLS, must create private key and self-signed certification (see below)_
 
-### Create private key and self-signed certificate
+#### Create private key and self-signed certificate
 
 ```
 openssl genrsa -out tls.key 2048
@@ -243,7 +272,7 @@ openssl req -new -x509 -key tls.key -out tls.cert -days 360 -subj /CN=sandbox-k8
 kubectl create secret tls tls-secret --cert=tls.cert --key=tls.key
 ```
 
-## Future topics
+### Future topics
 
 * Jobs
 * CronJob
