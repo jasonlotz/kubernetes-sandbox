@@ -300,8 +300,7 @@ cat demo2/textfile1
 * Jobs
 * CronJob
 * Volumes
-    * emptyDir
     * gitRepo
     * hostPath
- *
+    * Persistent Volumes & Claims
 * Sidecar containers

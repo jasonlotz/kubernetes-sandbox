@@ -7,23 +7,18 @@ spec:
     - image: alpine
       imagePullPolicy: IfNotPresent
       name: sandbox-k8s-volume-container-1
-      command: ['sh', '-c', 'echo Container 1 is running ; sleep 3600']
+      command: ['sh', '-c']
+      args: ['echo Container 1 is running; sleep 3600']
       volumeMounts:
         - mountPath: /demo1
           name: demo-volume
     - image: alpine
       imagePullPolicy: IfNotPresent
       name: sandbox-k8s-volume-container-2
-      command: ['sh', '-c', 'echo Container 2 is running ; sleep 3600']
+      command: ['sh', '-c']
+      args: ['echo Container 2 is running; sleep 3600']
       volumeMounts:
         - mountPath: /demo2
-          name: demo-volume
-    - image: alpine
-      imagePullPolicy: IfNotPresent
-      name: sandbox-k8s-volume-container-3
-      command: ['sh', '-c', 'echo Container 3 is running ; sleep 3600']
-      volumeMounts:
-        - mountPath: /demo3
           name: demo-volume
   volumes:
     - name: demo-volume
