@@ -386,3 +386,5 @@ Specifying a revision:
 * HorizontalPodAutoscalers
 * Requesting compute resources
 * Advanced scheduling (node taints, pod tolerations, and node/pod affinities)
+* Init Containers
+* Container Lifecycle Hooks
