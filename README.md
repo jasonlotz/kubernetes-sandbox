@@ -255,6 +255,10 @@ Ingress (with TLS):
 
 `kubectl exec {pod name} -- curl -s http://sandbox-k8s-clusterip-svc-svc`
 
+Through the kubectl proxy:
+
+`curl localhost:8001/api/v1/namespaces/default/services/sandbox-k8s-clusterip-svc/proxy/`
+
 #### Call NodePort service from browser via MiniKube
 
 `minikube service sandbox-k8s-nodeport-svc`
@@ -377,3 +381,8 @@ Specifying a revision:
 * Secrets with volumes
 * DownwardAPI
 * Ambassador container pattern for accessing API from within a pod
+* StatefulSets
+* ServiceAccounts
+* HorizontalPodAutoscalers
+* Requesting compute resources
+* Advanced scheduling (node taints, pod tolerations, and node/pod affinities)
