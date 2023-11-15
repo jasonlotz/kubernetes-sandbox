@@ -103,7 +103,7 @@ Multiple containers:
 ### Test app
 `curl localhost:8888`
 
-Or, open web browser to http://http://localhost:8888
+Or, open web browser to http://localhost:8888
 
 ### Updating labels
 `kubectl label po sandbox-k8s-manual env=test --overwrite`
@@ -132,7 +132,9 @@ From the command line:
 ### Delete the pod
 `kubectl delete po sandbox-k8s-app`
 
-You can also delete more than one pod by specifying multiple, space-separated names (for example, kubectl delete po pod1 pod2)
+You can also delete more than one pod by specifying multiple, space-separated names:
+
+`kubectl delete po pod1 pod2`
 
 Using label selectors:
 
