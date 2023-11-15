@@ -16,6 +16,7 @@
     * [Services](#services)
     * [Volumes](#volumes)
     * [Config Maps](#config-maps)
+    * [Kubernetes API](#kubernetes-api)
 
 ## Docker Commands
 
@@ -307,6 +308,22 @@ or
 
 `kubectl describe configmap sandbox-k8s-test-configmap`
 
+### Kubernetes API
+
+#### List all endpoints from local machine
+```
+kubectl proxy
+curl localhost:8001
+```
+
+#### Start Minikube with Swagger UI enabled
+`minikube start --extra-config=apiserver.Features.Enable-SwaggerUI=true`
+
+#### Access Swagger UI
+`kubectl proxy`
+
+Open browser to `http(s)://localhost:8001/swagger-ui`
+
 ### Future topics
 
 * Jobs
@@ -318,4 +335,6 @@ or
 * Sidecar containers
 * ConfigMap with files and volumes
 * Secrets with volumes
+* DownwardAPI
+* Ambassador container pattern for accessing API from within a pod
 
