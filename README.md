@@ -15,6 +15,7 @@
     * [Replication Set](#replication-sets)
     * [Services](#services)
     * [Volumes](#volumes)
+    * [Config Maps](#config-maps)
 
 ## Docker Commands
 
@@ -293,7 +294,18 @@ exit
 kubectl exec sandbox-k8s-volume-pod -c sandbox-k8s-volume-container-2 -i -t -- /bin/sh
 cat demo2/textfile1
 ```
+### Config Maps
 
+#### Create config map
+
+`kubectl create -f sandbox-k8s-test-configmap.yaml`
+
+#### Verify config map entry
+`kubectl get configmap sandbox-k8s-test-configmap -o yaml`
+
+or
+
+`kubectl describe configmap sandbox-k8s-test-configmap`
 
 ### Future topics
 
@@ -304,3 +316,6 @@ cat demo2/textfile1
     * hostPath
     * Persistent Volumes & Claims
 * Sidecar containers
+* ConfigMap with files and volumes
+* Secrets with volumes
+
