@@ -29,7 +29,7 @@
 ## Tag image
 `docker tag sandbox-k8s-app jlotz/sandbox-k8s-app`
 
-(Replace "jlotz" with your Docker Hub ID)
+_Note: Replace "jlotz" with your Docker Hub ID_
 
 ### Push to Docker Hub
 `docker push jlotz/sandbox-k8s-app`
@@ -180,9 +180,68 @@ All resources in the current namespace:
 ### Delete replication sets
 `kubectl delete rs sandbox-k8s-rs`
 
+### Create service
+ClusterIP (Default):
 
+`kubectl create -f sandbox-k8s-svc.yaml`
 
+NodePort:
 
+`kubectl create -f sandbox-k8s-nodeport-svc.yaml`
+
+Load Balancer:
+
+`kubectl create -f sandbox-k8s-loadbalancer-svc.yaml`
+
+Ingress:
+
+`kubectl create -f sandbox-k8s-ingress-svc.yaml`
+
+Ingress (with TLS):
+
+`kubectl create -f sandbox-k8s-ingress-svc.yaml`
+
+### Get services
+`kubectl get svc`
+
+### Call service from within a pod
+`kubectl exec {pod name} -- curl -s http://{service IP}`
+
+`kubectl exec {pod name} -- curl http://sandbox-k8s-svc.default.svc.cluster.local`
+
+`kubectl exec {pod name} -- curl http://sandbox-k8s-svc.default`
+
+`kubectl exec {pod name} -- curl http://sandbox-k8s-svc`
+
+### Call NodePort service from browser via MiniKube
+
+`minikube service sandbox-k8s-nodeport-svc`
+
+### Call LoadBalancer service from browser via MiniKube
+
+`minikube service sandbox-k8s-loadbalancer-svc`
+
+### Call Ingress service
+No TLS:
+
+`curl http://sandbox-k8s.example.com`
+
+TLS:
+
+curl -k -v https://sandbox-k8s.example.com
+
+_Notes:_ 
+* _Must update `/etc/hosts` to include service IP address mapping for `sandbox-k8s.example.com` from `kubectl get ingresses`_ 
+* _Must enable Ingress in Minikube via the following command: `minikube addons enable ingress`_
+* _For TLS, must create private key and self-signed certification (see below)_
+
+### Create private key and self-signed certificate
+
+```
+openssl genrsa -out tls.key 2048
+openssl req -new -x509 -key tls.key -out tls.cert -days 360 -subj /CN=sandbox-k8s.example.com
+kubectl create secret tls tls-secret --cert=tls.cert --key=tls.key
+```
 
 ## Future topics
 

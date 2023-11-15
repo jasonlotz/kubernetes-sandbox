@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sandbox-k8s-ingress-svc
+spec:
+  rules:
+    - host: sandbox-k8s.example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sandbox-k8s-nodeport-svc
+              servicePort: 80
