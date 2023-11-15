@@ -14,14 +14,15 @@
     * [Replication Controllers](#replication-controllers)
     * [Replication Set](#replication-sets)
     * [Services](#services)
+    * [Volumes](#volumes)
 
 ## Docker Commands
 
-#### Build the container image
-`docker build -t sandbox-k8s-app .`
+#### Build the container images
+`docker build -t sandbox-k8s-app-image .`
 
 #### Run the image
-`docker run --name sandbox-k8s-app-container -p 8080:8080 -d sandbox-k8s-app`
+`docker run --name sandbox-k8s-app-container -p 8080:8080 -d sandbox-k8s-app-image`
 
 #### Test the app
 `curl localhost:8080`
@@ -42,15 +43,15 @@
 `docker login`
 
 #### Tag image
-`docker tag sandbox-k8s-app jlotz/sandbox-k8s-app`
+`docker tag sandbox-k8s-app-image jlotz/sandbox-k8s-app-image`
 
 _Note: Replace "jlotz" with your Docker Hub ID_
 
 #### Push to Docker Hub
-`docker push jlotz/sandbox-k8s-app`
+`docker push jlotz/sandbox-k8s-app-image`
 
 #### Run image from a different machine
-`docker run -p 8080:8080 -d jlotz/sandbox-k8s-app`
+`docker run -p 8080:8080 -d jlotz/sandbox-k8s-app-image`
 
 ## Kubernetes Commands
 
@@ -69,11 +70,11 @@ These instructions assume that you have a working installation of `minikube` run
 `kubectl cluster-info`
 
 #### Deploy pod from YAML
-`kubectl create -f sandbox-k8s-manual.yaml`
+`kubectl create -f sandbox-k8s-app-pod.yaml`
 
 Specifying a namespace:
 
-`kubectl create -f sandbox-k8s-manual.yaml -n custom-namespace`
+`kubectl create -f sandbox-k8s-app-pod.yaml -n sandbox-k8s-custom-namespace`
 
 #### List pods using labels
 `kubectl get po --show-labels`
@@ -101,25 +102,27 @@ Similarly, you could also match pods with the following label selectors:
 `env notin (prod,devel)` to select pods with the env label set to any value other than prod or devel
 
 #### Describe the pod
-`kubectl describe pod sandbox-k8s-manual`
+`kubectl describe pod sandbox-k8s-app-pod`
 
 #### Get the full YAML or JSON for the pod
-`kubectl get po sandbox-k8s-manual -o yaml`
-`kubectl get po sandbox-k8s-manual -o json`
+`kubectl get po sandbox-k8s-app-pod -o yaml`
+`kubectl get po sandbox-k8s-app-pod -o json`
 
 #### Access logs from pod
 Single container:
-`kubectl logs sandbox-k8s-manual`
 
-Multiple containers:
-`kubectl logs sandbox-k8s-manual sandbox-k8s-app`
+`kubectl logs sandbox-k8s-app-pod`
+
+Multiple containers (specify pod and container names):
+
+`kubectl logs sandbox-k8s-app-pod sandbox-k8s-app-container`
 
 Previous iteration (after a failure/restart):
 
-`kubectl logs sandbox-k8s-manual --previous`
+`kubectl logs sandbox-k8s-app-pod --previous`
 
 #### Setup port forwarding
-`kubectl port-forward sandbox-k8s-manual 8888:8080`
+`kubectl port-forward sandbox-k8s-app-pod 8888:8080`
 
 #### Test app
 `curl localhost:8888`
@@ -127,7 +130,7 @@ Previous iteration (after a failure/restart):
 Or, open web browser to http://localhost:8888
 
 #### Delete the pod
-`kubectl delete po sandbox-k8s-app`
+`kubectl delete po sandbox-k8s-app-pod`
 
 You can also delete more than one pod by specifying multiple, space-separated names:
 
@@ -139,7 +142,7 @@ Using label selectors:
 
 All pods in a namespace:
 
-`kubectl delete ns custom-namespace`
+`kubectl delete ns sandbox-k8s-custom-namespace`
 
 All pods in the current namespace:
 
@@ -152,12 +155,12 @@ All resources in the current namespace:
 ### Labels
 
 #### Updating labels
-`kubectl label po sandbox-k8s-manual env=test --overwrite`
+`kubectl label po sandbox-k8s-app-pod env=test --overwrite`
 
 ### Annotations
 
 #### Adding annotations
-`kubectl annotate pod sandbox-k8s-manual mycompany.com/someannotation="foo bar"`
+`kubectl annotate pod sandbox-k8s-app-pod mycompany.com/someannotation="foo bar"`
 
 ### Namespaces
 
@@ -179,10 +182,13 @@ From the command line:
 #### Switch to a namespace
 `kubectl config set-context $(kubectl config current-context) --namespace custom-namespace`
 
+#### Verify current namespace
+`kubectl config get-contexts`
+
 ### Replication Controllers
 
 #### Create replication controller
-`kubectl create -f kubia-rc.yaml`
+`kubectl create -f sandbox-k8s-rc.yaml`
 
 #### Get replication controllers
 `kubectl get rc`
@@ -191,28 +197,30 @@ From the command line:
 `kubectl describe rc sandbox-k8s-rc`
 
 #### Delete replication controller
-`kubectl delete rs sandbox-k8s-rc`
+`kubectl delete rc sandbox-k8s-rc`
 
 ### Replication Sets
 
 #### Create replication set
-`kubectl create -f kubia-rs.yaml`
+`kubectl create -f sandbox-k8s-rs.yaml`
 
 #### Get replications sets
 `kubectl get rs`
 
 #### Describe replications sets
-`kubectl describe rc sandbox-k8s-rs`
+`kubectl describe rs sandbox-k8s-rs`
 
 #### Delete replication sets
 `kubectl delete rs sandbox-k8s-rs`
 
 ### Services
 
+The following section assumes that you have deployed pods via replication sets as instructed above.
+
 #### Create service
 ClusterIP (Default):
 
-`kubectl create -f sandbox-k8s-svc.yaml`
+`kubectl create -f sandbox-k8s-clusterip-svc.yaml`
 
 NodePort:
 
@@ -228,19 +236,19 @@ Ingress:
 
 Ingress (with TLS):
 
-`kubectl create -f sandbox-k8s-ingress-svc.yaml`
+`kubectl create -f sandbox-k8s-ingress-tls-svc.yaml`
 
 #### Get services
 `kubectl get svc`
 
-#### Call service from within a pod
+#### Call ClusterIP service from within a pod
 `kubectl exec {pod name} -- curl -s http://{service IP}`
 
-`kubectl exec {pod name} -- curl http://sandbox-k8s-svc.default.svc.cluster.local`
+`kubectl exec {pod name} -- curl -s http://sandbox-k8s-clusterip-svc.default.svc.cluster.local`
 
-`kubectl exec {pod name} -- curl http://sandbox-k8s-svc.default`
+`kubectl exec {pod name} -- curl -s http://sandbox-k8s-clusterip-svc.default`
 
-`kubectl exec {pod name} -- curl http://sandbox-k8s-svc`
+`kubectl exec {pod name} -- curl -s http://sandbox-k8s-clusterip-svc-svc`
 
 #### Call NodePort service from browser via MiniKube
 
@@ -272,7 +280,28 @@ openssl req -new -x509 -key tls.key -out tls.cert -days 360 -subj /CN=sandbox-k8
 kubectl create secret tls tls-secret --cert=tls.cert --key=tls.key
 ```
 
+### Volumes
+
+#### Create pod
+`kubectl create -f sandbox-k8s-volume-pod.yaml`
+
+#### Connect to containers to verify write/read of shared volume
+```
+kubectl exec sandbox-k8s-volume-pod -c sandbox-k8s-volume-container-1 -i -t -- /bin/sh
+echo test1 > demo1/textfile1
+exit
+kubectl exec sandbox-k8s-volume-pod -c sandbox-k8s-volume-container-2 -i -t -- /bin/sh
+cat demo2/textfile1
+```
+
+
 ### Future topics
 
 * Jobs
 * CronJob
+* Volumes
+    * emptyDir
+    * gitRepo
+    * hostPath
+ *
+* Sidecar containers

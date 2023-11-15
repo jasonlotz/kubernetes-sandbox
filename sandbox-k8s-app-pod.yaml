@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sandbox-k8s-manual
+  name: sandbox-k8s-app-pod
   labels:
     creation_method: manual
     env: prod
+    app: sandbox-k8s-app
 spec:
   containers:
-    - image: jlotz/sandbox-k8s-app
-      name: sandbox-k8s-app
+    - image: jlotz/sandbox-k8s-app-image
+      name: sandbox-k8s-app-container
       livenessProbe:
         httpGet:
           path: /

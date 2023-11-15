@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: sandbox-k8s-rs
@@ -13,5 +13,5 @@ spec:
         app: sandbox-k8s-app
     spec:
       containers:
-        - name: sandbox-k8s-app
-          image: luksa/sandbox-k8s-app
+        - name: sandbox-k8s-app-container
+          image: jlotz/sandbox-k8s-app-image

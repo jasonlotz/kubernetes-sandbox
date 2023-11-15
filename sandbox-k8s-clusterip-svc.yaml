@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: sandbox-k8s-svc
+  name: sandbox-k8s-clusterip-svc
 spec:
   ports:
     - port: 80

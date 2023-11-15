@@ -12,7 +12,7 @@ spec:
         app: sandbox-k8s-app
     spec:
       containers:
-        - name: sandbox-k8s-app
-          image: jlotz/sandbox-k8s-app
+        - name: sandbox-k8s-app-container
+          image: jlotz/sandbox-k8s-app-image
           ports:
             - containerPort: 8080
