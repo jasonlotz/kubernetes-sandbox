@@ -1,0 +1,17 @@
+apiVersion: apps/v1beta2
+kind: ReplicaSet
+metadata:
+  name: sandbox-k8s-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sandbox-k8s-app
+  template:
+    metadata:
+      labels:
+        app: sandbox-k8s-app
+    spec:
+      containers:
+        - name: sandbox-k8s-app
+          image: luksa/sandbox-k8s-app

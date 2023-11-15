@@ -155,3 +155,36 @@ All pods in the current namespace:
 All resources in the current namespace:
 
 `kubectl delete all --all`
+
+### Create replication controller
+`kubectl create -f kubia-rc.yaml`
+
+### Get replications controllers
+`kubectl get rc`
+
+### Describe replications controller
+`kubectl describe rc sandbox-k8s-rc`
+
+### Delete replication controller
+`kubectl delete rs sandbox-k8s-rc`
+
+### Create replication set
+`kubectl create -f kubia-rs.yaml`
+
+### Get replications sets
+`kubectl get rs`
+
+### Describe replications sets
+`kubectl describe rc sandbox-k8s-rs`
+
+### Delete replication sets
+`kubectl delete rs sandbox-k8s-rs`
+
+
+
+
+
+## Future topics
+
+* Jobs
+* CronJob

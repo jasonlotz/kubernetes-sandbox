@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: sandbox-k8s-rc
+spec:
+  replicas: 3
+  selector:
+    app: sandbox-k8s-app
+  template:
+    metadata:
+      labels:
+        app: sandbox-k8s-app
+    spec:
+      containers:
+        - name: sandbox-k8s-app
+          image: jlotz/sandbox-k8s-app
+          ports:
+            - containerPort: 8080
