@@ -9,6 +9,11 @@ spec:
   containers:
     - image: jlotz/sandbox-k8s-app
       name: sandbox-k8s-app
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 8080
+        initialDelaySeconds: 15
       ports:
         - containerPort: 8080
           protocol: TCP

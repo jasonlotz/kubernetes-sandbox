@@ -97,6 +97,10 @@ Single container:
 Multiple containers:
 `kubectl logs sandbox-k8s-manual sandbox-k8s-app`
 
+Previous iteration (after a failure/restart):
+
+`kubectl logs sandbox-k8s-manual --previous`
+
 ### Setup port forwarding
 `kubectl port-forward sandbox-k8s-manual 8888:8080`
 
