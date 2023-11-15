@@ -228,7 +228,7 @@ No TLS:
 
 TLS:
 
-curl -k -v https://sandbox-k8s.example.com
+`curl -k -v https://sandbox-k8s.example.com`
 
 _Notes:_ 
 * _Must update `/etc/hosts` to include service IP address mapping for `sandbox-k8s.example.com` from `kubectl get ingresses`_ 
