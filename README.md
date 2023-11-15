@@ -17,6 +17,9 @@
     * [Volumes](#volumes)
     * [Config Maps](#config-maps)
     * [Kubernetes API](#kubernetes-api)
+    * [Deployments](#deployments)
+    * [Methods for Updating Resources](#methods-for-updating-resources)
+  
 
 ## Docker Commands
 
@@ -324,17 +327,53 @@ curl localhost:8001
 
 Open browser to `http(s)://localhost:8001/swagger-ui`
 
+### Deployments
+
+#### Create deployment
+`kubectl create -f sandbox-k8s-deployment.yaml --record`
+
+#### Verify the creation of the replica set
+`kubectl get replicasets`
+
+#### Request status of a deployment rollout
+`kubectl rollout status deployment sandbox-k8s-deployment`
+
+#### Request history of a deployment
+`kubectl rollout history deployment sandbox-k8s-deployment`
+
+#### Rollback updated deployment
+`kubectl rollout undo deployment sandbox-k8s-deployment`
+
+#### Pause/resume deployment rollout
+`kubectl rollout pause deployment sandbox-k8s-deployment`
+
+`kubectl rollout resume deployment sandbox-k8s-deployment`
+
+Specifying a revision:
+
+`kubectl rollout undo deployment sandbox-k8s-deployment --to-revision=1`
+
+### Methods for updating resources
+
+|Method|Description|
+|---|---|
+|kubectl edit|Opens the object’s manifest in your default editor. After making changes, saving the file, and exiting the editor, the object is updated. Example: `kubectl edit deployment sandbox-k8s-deployment`|
+|kubectl patch|Modifies individual properties of an object. Example: `kubectl patch deployment sandbox-k8s-deployment -p '{"spec": {"template": {"spec": {"containers": [{"name": "sandbox-k8s-app-container", "image": "jlotz/sandbox-k8s-app-image:latest"}]}}}}`'|
+|kubectl apply|Modifies the object by applying property values from a full YAML or JSON file. If the object specified in the YAML/JSON doesn’t exist yet, it’s created. The file needs to contain the full definition of the resource (it can’t include only the fields you want to update, as is the case with kubectl patch). Example: `kubectl apply -f sandbox-k8s-deployment-v2.yaml`|
+|kubectl replace|Replaces the object with a new one from a YAML/JSON file. In contrast to the apply command, this command requires the object to exist; otherwise it prints an error. Example: `kubectl replace -f sandbox-k8s-deployment-v2.yaml`|
+|kubectl set image|Changes the container image defined in a Pod, ReplicationController’s template, Deployment, DaemonSet, Job, or ReplicaSet. Example: `kubectl set image deployment kubia nodejs=jlotz/sandbox-k8s-app:latest`|
+
 ### Future topics
 
+* Liveness & Readiness probes
 * Jobs
 * CronJob
 * Volumes
-    * gitRepo
-    * hostPath
-    * Persistent Volumes & Claims
+  * gitRepo
+  * hostPath
+  * Persistent Volumes & Claims
 * Sidecar containers
 * ConfigMap with files and volumes
 * Secrets with volumes
 * DownwardAPI
 * Ambassador container pattern for accessing API from within a pod
-

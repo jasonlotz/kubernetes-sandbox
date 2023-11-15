@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sandbox-k8s-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sandbox-k8s-app
+  template:
+    metadata:
+      labels:
+        app: sandbox-k8s-app
+    spec:
+      containers:
+        - image: jlotz/sandbox-k8s-app-image
+          name: sandbox-k8s-app-container
