@@ -1,4 +1,4 @@
-# sandbox-kubernetes
+# kubernetes-sandbox
 
 ## Overview
 **sandbox-kubernetes** is a set of Docker and Kubernetes configuration files used as a starting point for learning and testing key features of Kubernetes.
